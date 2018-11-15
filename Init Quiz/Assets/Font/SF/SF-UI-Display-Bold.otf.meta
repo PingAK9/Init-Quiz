@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: 9692bb73f45771d43af6e48e879a7198
+timeCreated: 1499854163
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: SF UI Display
+  fontNames:
+  - SF UI Display
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 2d23b250dc2b02d4f81849ce2aa179b8, type: 3}
+  - {fileID: 12800000, guid: 45597887dbb38044882a9815e3b60d61, type: 3}
+  - {fileID: 12800000, guid: 8353fd7c733c3d84585a85055dd67294, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
