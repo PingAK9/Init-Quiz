@@ -6,38 +6,36 @@ using UnityEngine.UI;
 
 public class LoginManager : MonoBehaviour
 {
-    #region DoctorInfo
-
+    //Doctor
     public InputField doctorName;
     public InputField khoa;
     public InputField hospital;
 
-    #endregion
-
-    #region PharmaInfo
-
+    //Pharmar
     public InputField pharmaName;
     public InputField nhathuoc;
     public InputField place;
 
-    #endregion
-
     public Text notice;
-    public TestSelector selection;
+    public QuizSelector selection;
+    public GameObject objDoctor;
+    public GameObject objPharma;
     private void Start()
     {
-        LoadSceneFromOther.isLoad = true;
-        //Create new UserInfo Database
+        notice.text = "";
         CurrentUser.userInfo = new UserInfo();
     }
-
-    #region Operations
-
-    /// <summary>
-    ///     On Register Click
-    /// </summary>
-    /// <param name="bnt">Bnt.</param>
-    private void OnRegisterDoctor(GameObject bnt)
+    public void StartGame()
+    {
+        if (objDoctor.activeSelf)
+        {
+            OnRegisterDoctor();
+        }else
+        {
+            OnRegisterPharmacy();
+        }
+    }
+    void OnRegisterDoctor()
     {
         //For Doctor
         if (string.IsNullOrEmpty(khoa.text) || string.IsNullOrEmpty(doctorName.text) ||
@@ -51,10 +49,9 @@ public class LoginManager : MonoBehaviour
         CurrentUser.userInfo.fullname = doctorName.text;
         CurrentUser.userInfo.hospital = hospital.text;
         CurrentUser.userInfo.major = khoa.text;
-
         selection.PlayGame();
     }
-    private void OnRegisterPharmacy(GameObject bnt)
+    void OnRegisterPharmacy()
     {
         //For Pharmacy
         if (string.IsNullOrEmpty(pharmaName.text) || string.IsNullOrEmpty(place.text) ||
@@ -71,23 +68,32 @@ public class LoginManager : MonoBehaviour
 
         selection.PlayGame();
     }
-    /// <summary>
-    ///     Raises the checkin click event.
-    /// </summary>
-    private void OnCheckinLocale(bool value)
+    public void OnClickTapPharmacy(bool value)
+    {
+        if (value)
+        {
+            objDoctor.SetActive(false);
+            objPharma.SetActive(true);
+        }
+    }
+    public void OnClickTapDoctor(bool value)
+    {
+        if (value)
+        {
+            objDoctor.SetActive(true);
+            objPharma.SetActive(false);
+        }
+    }
+    //
+    public void OnCheckinLocale()
     {
         StartCoroutine(StartLocationService());
     }
     public Toggle checkinToggle;
-    /// <summary>
-    ///     Starts the location service.
-    /// </summary>
-    /// <returns>The location service.</returns>
     private IEnumerator StartLocationService()
     {
         if (!Input.location.isEnabledByUser)
         {
-            checkinToggle.isOn = false;
             yield return false;
         }
 
@@ -118,11 +124,9 @@ public class LoginManager : MonoBehaviour
                   Input.location.lastData.timestamp);
             CurrentUser.userInfo.lat = Input.location.lastData.latitude;
             CurrentUser.userInfo.lng = Input.location.lastData.longitude;
-            checkinToggle.isOn = true;
         }
 
         Input.location.Stop();
     }
 
-    #endregion
 }

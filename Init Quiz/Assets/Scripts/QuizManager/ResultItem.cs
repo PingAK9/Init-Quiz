@@ -20,6 +20,7 @@ public class ResultItem : MonoBehaviour
     public GameObject IncorrectGo;
     public AudioClip win;
     public AudioClip lose;
+    public AudioSource audio;
 
     #endregion
 
@@ -62,19 +63,19 @@ public class ResultItem : MonoBehaviour
         {
             CorrectGo.SetActive(true);
             starIcon = FullCorrectStar;
-            GetComponent<AudioSource>().PlayOneShot(win);
+            if (audio != null) audio.PlayOneShot(win);
         }
         else if (paramState == EProgressBarItemState.HalfCorrect)
         {
             CorrectGo.SetActive(true);
             starIcon = HalfCorrectStar;
-            GetComponent<AudioSource>().PlayOneShot(win);
+            if (audio != null) audio.PlayOneShot(win);
         }
         else
         {
             IncorrectGo.SetActive(true);
             starIcon = IncorrectStar;
-            GetComponent<AudioSource>().PlayOneShot(lose);
+            if (audio != null) audio.PlayOneShot(lose);
         }
 
         StarSprite.sprite = starIcon;

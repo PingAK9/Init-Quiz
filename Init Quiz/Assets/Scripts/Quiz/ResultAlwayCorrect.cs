@@ -6,10 +6,8 @@ public class ResultAlwayCorrect : Result {
    
     public override void CheckResult()
     {
+        base.CheckResult();
         CheckResult(true);
     }
 
-    void Start () {
-		
-	}
 }

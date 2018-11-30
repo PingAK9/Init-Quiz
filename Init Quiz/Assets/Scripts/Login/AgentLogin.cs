@@ -8,8 +8,11 @@ public class AgentLogin : MonoBehaviour
     public InputField agentName;
     public Dropdown place;
     public Text notice;
-
-    private void OnReg()
+    private void Start()
+    {
+        notice.text = "";
+    }
+    public void OnClickRegister()
     {
         if (string.IsNullOrEmpty(agentName.text))
         {
@@ -19,7 +22,7 @@ public class AgentLogin : MonoBehaviour
 
         SaveControl.dataSync.device.owner = agentName.text;
         SaveControl.dataSync.device.branch = place.options[place.value].text;
-        SaveControl.control.Save();
+        SaveControl.SaveData();
         SceneManager.LoadScene(SceneList.LoginScene);
     }
 }

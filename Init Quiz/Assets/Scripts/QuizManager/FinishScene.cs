@@ -39,7 +39,7 @@ public class FinishScene : MonoBehaviour
         }
     }
 
-    void OnFinish()
+    public void OnFinish()
     {
         ResultManager.Instance.SaveData();
         SceneManager.LoadScene(SceneList.LoginScene);

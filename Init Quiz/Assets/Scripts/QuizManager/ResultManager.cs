@@ -15,6 +15,8 @@ public class ResultManager
     /// </summary>
 
     #region Score Infomation
+    public string welcomeScene;
+    public string resultScene;
     public string[] allScene;
     public int currentSceneIndex;
     /// <summary>
@@ -33,11 +35,44 @@ public class ResultManager
     /// Mark this question has showed tutorial or not
     /// </summary>
     public bool[] haveTutorial;
-
     public QuestionResult[] questionTracker;
 
+    public EProgressBarItemState UpdateResult(int paramIndex, bool paramCorrect)
+    {
+        EProgressBarItemState state = ResultManager.Instance.currentResult[paramIndex];
+        EProgressBarItemState newState = state;
+        switch (state)
+        {
+            case EProgressBarItemState.Empty:
+                if (paramCorrect)
+                    newState = EProgressBarItemState.FullCorrect;
+                else
+                    newState = EProgressBarItemState.Incorrect;
+                break;
+
+            case EProgressBarItemState.Incorrect:
+                if (paramCorrect)
+                    newState = EProgressBarItemState.HalfCorrect;
+                break;
+        }
+
+        currentResult[paramIndex] = newState;
+        if (newState == EProgressBarItemState.Empty || newState == EProgressBarItemState.Incorrect)
+        {
+            questionTracker[paramIndex].correct = false;
+        }else
+        {
+            questionTracker[paramIndex].correct = true;
+        }
+
+        if (QuizProgressBar.Instance != null)
+        {
+            QuizProgressBar.Instance.SetItemState(paramIndex);
+        }
+        return newState;
+    }
     #endregion
-    public static void Init(string[] allScene)
+    public static void Init(string[] allScene, int test_type)
     {
         Instance = new ResultManager();
         Instance.allScene = allScene;
@@ -50,8 +85,18 @@ public class ResultManager
         for (int i = 0; i < Instance.allScene.Length; i++)
         {
             Instance.questionTracker[i] = new QuestionResult();
-            Instance.questionTracker[i].test_type = 1;
+            Instance.questionTracker[i].test_type = test_type;
             Instance.questionTracker[i].question_order = i;
+        }
+    }
+    public void StartGame()
+    {
+        if (string.IsNullOrEmpty(welcomeScene) == false)
+        {
+            SceneManager.LoadScene(Instance.welcomeScene);
+        }else
+        {
+            SceneManager.LoadScene(Instance.allScene[0]);
         }
     }
     public void OnRetry()
@@ -127,7 +172,6 @@ public class ResultManager
         CurrentUser.userInfo.numberCorrect = GetFinalScore();
         CurrentUser.userInfo.numberIncorrect =Instance.TotalQuest - GetFinalScore();
         CurrentUser.userInfo.timeplay = (int)(DateTime.Now - CurrentUser.userInfo.date).TotalSeconds;
-        SaveControl.control.AddPlayerRecord(CurrentUser.userInfo);
-        SaveControl.control.Save();
+        SaveControl.AddPlayerRecord(CurrentUser.userInfo);
     }
 }

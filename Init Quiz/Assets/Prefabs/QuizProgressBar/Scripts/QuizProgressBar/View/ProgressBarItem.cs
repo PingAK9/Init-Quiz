@@ -10,7 +10,7 @@ public class ProgressBarItem : MonoBehaviour
     /// Reference to item's UI2DSprite
     /// </summary>
     public Image IconSprite;
-    public Animation anim;
+    public Animator anim;
 
     #endregion
 

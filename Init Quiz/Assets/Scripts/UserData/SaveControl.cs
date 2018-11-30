@@ -6,25 +6,42 @@ using System.IO;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-public class SaveControl : MonoBehaviour
+public class SaveControl
 {
-    public static SaveControl control;
     public static DataSync dataSync;
 
-    private void Awake()
+    private static string url = "http://abbott.ssd-asia.com/pharmacy/b2b_v2";
+
+    public static void Post(Action<bool> response)
     {
-        if (control == null)
+        if (dataSync.player.Count == 0)
         {
-            DontDestroyOnLoad(gameObject);
-            control = this;
+            response(true);
+            return;
         }
-        else if (control != this)
-        {
-            Destroy(gameObject);
-        }
+
+        BaseOnline.Instance.WWW(SaveControl.url, dataSync, (string message) => {
+            try
+            {
+                if (BaseOnline.IsSuccess(message))
+                {
+                    dataSync.player = new List<UserInfo>();
+                    response(true);
+                }
+                else
+                {
+                    response(false);
+                }
+            }
+            catch (Exception)
+            {
+                response(false);
+            }
+        });
+
     }
 
-    public void Save()
+    public static void SaveData()
     {
         try
         {
@@ -40,7 +57,7 @@ public class SaveControl : MonoBehaviour
         }
     }
 
-    public DataSync Load()
+    static DataSync LoadData()
     {
         try
         {
@@ -52,8 +69,11 @@ public class SaveControl : MonoBehaviour
                 file.Close();
                 return dataLoad;
             }
-            Debug.Log("File isn't exist");
-            return null;
+            else
+            {
+                Debug.Log("File isn't exist");
+                return null;
+            }
         }
         catch (Exception error)
         {
@@ -62,39 +82,30 @@ public class SaveControl : MonoBehaviour
         }
     }
 
-    public void ResetData()
+    public static void ResetData()
     {
         dataSync.player.Clear();
         dataSync.player = new List<UserInfo>();
-        Save();
+        SaveData();
     }
 
-    public void AddPlayerRecord(UserInfo getUserInfo)
+    public static void AddPlayerRecord(UserInfo getUserInfo)
     {
         Debug.Log("Add Player Record");
         UserInfo tempUser = new UserInfo();
         tempUser = getUserInfo;
         dataSync.player.Add(tempUser);
+        SaveData();
     }
 
-    private void InitData()
+    public static void InitData()
     {
-        dataSync = Load();
-
+        dataSync = LoadData();
         if (dataSync == null)
         {
             dataSync = new DataSync();
             dataSync.device = new DeviceInfo();
         }
-
-        if (string.IsNullOrEmpty(dataSync.device.owner))
-        {
-            SceneManager.LoadScene(SceneList.AgentScene);
-        }
     }
 
-    private void Start()
-    {
-        InitData();
-    }
 }

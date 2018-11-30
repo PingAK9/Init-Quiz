@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class CorrectSequence : MonoBehaviour
+public class IndexQuestion : MonoBehaviour
 {
     public Text questNo;
 
